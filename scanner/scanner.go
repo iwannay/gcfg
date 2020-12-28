@@ -16,10 +16,8 @@ import (
 	"path/filepath"
 	"unicode"
 	"unicode/utf8"
-)
 
-import (
-	"gopkg.in/gcfg.v1/token"
+	"github.com/iwannay/gcfg/token"
 )
 
 // An ErrorHandler may be provided to Scanner.Init. If a syntax error is
@@ -219,6 +217,7 @@ func (s *Scanner) scanValString() string {
 	hasCR := false
 	end := offs
 	inQuote := false
+	unQuote := false
 loop:
 	for inQuote || s.ch >= 0 && s.ch != '\n' && s.ch != ';' && s.ch != '#' {
 		ch := s.ch
@@ -236,8 +235,10 @@ loop:
 				break loop
 			}
 			s.next()
-		case ch == '"':
+		case ch == '"' && !unQuote:
 			inQuote = !inQuote
+		case ch == '`':
+			unQuote = !unQuote
 		case ch == '\r':
 			hasCR = true
 		case ch < 0 || inQuote && ch == '\n':
@@ -302,6 +303,7 @@ scanAgain:
 	case s.nextVal:
 		lit = s.scanValString()
 		tok = token.STRING
+		fmt.Println("1-----------", lit)
 		s.nextVal = false
 	case isLetter(ch):
 		lit = s.scanIdentifier()

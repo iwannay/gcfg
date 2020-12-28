@@ -3,9 +3,9 @@ package gcfg_test
 import (
 	"fmt"
 	"log"
-)
 
-import "gopkg.in/gcfg.v1"
+	"github.com/iwannay/gcfg"
+)
 
 func ExampleReadStringInto() {
 	cfgStr := `; Comment line
