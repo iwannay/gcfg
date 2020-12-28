@@ -18,7 +18,7 @@ var utf8Bom = []byte("\ufeff")
 
 // no error: invalid literals should be caught by scanner
 func unquote(s string) string {
-	u, q, esc := make([]rune, 0, len(s)), false, false
+	u, q, esc, uq := make([]rune, 0, len(s)), false, false, false
 	for _, c := range s {
 		if esc {
 			uc, ok := unescape[c]
@@ -32,10 +32,12 @@ func unquote(s string) string {
 			}
 			panic("invalid escape sequence")
 		}
-		switch c {
-		case '"':
+		switch {
+		case c == '"' && !uq:
 			q = !q
-		case '\\':
+		case c == '`':
+			uq = !uq
+		case c == '\\':
 			esc = true
 		default:
 			u = append(u, c)
