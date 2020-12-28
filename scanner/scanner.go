@@ -303,7 +303,6 @@ scanAgain:
 	case s.nextVal:
 		lit = s.scanValString()
 		tok = token.STRING
-		fmt.Println("1-----------", lit)
 		s.nextVal = false
 	case isLetter(ch):
 		lit = s.scanIdentifier()
